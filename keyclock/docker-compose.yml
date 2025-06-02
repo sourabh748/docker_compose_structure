@@ -1,0 +1,15 @@
+version: '3'
+
+services:
+  keycloak:
+    image: keycloak/keycloak@sha256:0fc8360b6e86ee60a6b45b3cc3e5723255d6a159da6bb55ba0da0365e104ecd4
+    container_name: keycloak
+    restart: always
+    ports:
+    - 8080:8080
+    - 8443:8443
+    - 9000:9000
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: extSupusr
+      KC_BOOTSTRAP_ADMIN_PASSWORD: ext#2024@keycloak
+    command: ['start-dev']

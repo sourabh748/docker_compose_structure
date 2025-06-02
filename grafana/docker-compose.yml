@@ -1,0 +1,52 @@
+version: '3'
+
+services:
+  mysql:
+    container_name: mysql
+    image: mysql:9.0.1-oraclelinux9
+    restart: always
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+      restart_policy:
+        condition: on-failure
+        max_attempts: 5
+        window: 30s
+    environment:
+      MYSQL_ROOT_PASSWORD: 2Brss@12345
+      MYSQL_DATABASE: test-db
+      MYSQL_USER: composed_user
+      MYSQL_PASSWORD: 2Brss@54321
+    # ports:
+    #   - 3307:3306
+    #   - 3308:33060
+    volumes:
+      - ./mysql/data:/var/lib/mysql
+
+  grafana:
+    container_name: grafana
+    image: grafana/grafana:11.3.0-ubuntu
+    restart: always
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+      restart_policy:
+        condition: on-failure
+        max_attempts: 5
+        window: 30s
+    depends_on:
+      - mysql
+    ports:
+      - 3000:3000

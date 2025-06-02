@@ -1,0 +1,6 @@
+airflow/path/*
+drupal/postgres-data/*
+grafana/mysql/*
+jekyll-serve/site/*
+maria_db/maria-db/*
+mysql/mysql/*

@@ -1,0 +1,15 @@
+version: '3'
+services:
+  maria-db:
+    image: docker.io/mariadb:11.6.1-ubi9-rc
+    container_name: maria-db
+    restart: always
+    environment:
+      MARIADB_ROOT_PASSWORD: 2Brss@12345
+      MARIADB_USER: ext_compose
+      MARIADB_PASSWORD: ext#_compose_mariadb
+      MARIADB_DATABASE: ext_compose
+    ports:
+    - "3307:3306"
+    volumes:
+    - ./maria-db:/var/lib/mysql

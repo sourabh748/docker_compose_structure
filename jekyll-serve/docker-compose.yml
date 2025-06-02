@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+  jekyll:
+    image: bretfisher/jekyll:stable-20240915-2119a31
+    volumes:
+      - ./site:/site
+    command: ['new', '.', '--force']
+    deploy:
+      restart_policy:
+        condition: no
+
+
+  jekyll-serve:
+    image: bretfisher/jekyll-serve:stable-20240915-2119a31
+    volumes:
+      - ./site:/site
+    ports:
+      - '8000:4000'
+    depends_on:
+      - jekyll

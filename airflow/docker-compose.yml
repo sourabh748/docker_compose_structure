@@ -1,0 +1,95 @@
+version: '2'
+services:
+  postgresql:
+    container_name: postgresql
+    image: 'bitnami/postgresql:latest'
+    user: root
+    restart: always
+    environment:
+      - POSTGRESQL_DATABASE=airflow
+      - POSTGRESQL_USERNAME=airflowExtUsr
+      - POSTGRESQL_PASSWORD=ext#2024@airflowdb
+    volumes:
+      - ./path/to/postgresql-persistence:/bitnami/postgresql
+    networks:
+      - frontend
+  redis:
+    image: 'bitnami/redis:latest'
+    restart: always
+    user: root
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    volumes:
+      - ./path/to/redis-persistence:/bitnami
+    networks:
+      - frontend
+  airflow-worker:
+    image: bitnami/airflow-worker:latest
+    restart: always
+    command: sh -c "airflow db migrate && /opt/bitnami/scripts/airflow-worker/entrypoint.sh /opt/bitnami/scripts/airflow-worker/run.sh"
+    environment:
+      - AIRFLOW_FERNET_KEY=46BKJoQYlPPOexq0OhDZnIlNepKFf87WFwLbfzqDDho=
+      - AIRFLOW_SECRET_KEY=a25mQ1FHTUh3MnFRSk5KMEIyVVU2YmN0VGRyYTVXY08=
+      - AIRFLOW_EXECUTOR=CeleryExecutor
+      - AIRFLOW_DATABASE_HOST=postgresql
+      - AIRFLOW_DATABASE_PORT_NUMBER=5432
+      - AIRFLOW_DATABASE_NAME=airflow
+      - AIRFLOW_DATABASE_USERNAME=airflowExtUsr
+      - AIRFLOW_DATABASE_PASSWORD=ext#2024@airflowdb
+      - AIRFLOW_WEBSERVER_HOST=airflow
+      - AIRFLOW_LOAD_EXAMPLES=yes
+    depends_on:
+      - postgresql
+      - redis
+      - airflow
+    networks:
+      - frontend
+  airflow-scheduler:
+    image: bitnami/airflow-scheduler:latest
+    restart: always
+    command: sh -c "airflow db migrate && /opt/bitnami/scripts/airflow-scheduler/entrypoint.sh /opt/bitnami/scripts/airflow-scheduler/run.sh"
+    environment:
+      - AIRFLOW_FERNET_KEY=46BKJoQYlPPOexq0OhDZnIlNepKFf87WFwLbfzqDDho=
+      - AIRFLOW_SECRET_KEY=a25mQ1FHTUh3MnFRSk5KMEIyVVU2YmN0VGRyYTVXY08=
+      - AIRFLOW_EXECUTOR=CeleryExecutor
+      - AIRFLOW_DATABASE_HOST=postgresql
+      - AIRFLOW_DATABASE_PORT_NUMBER=5432
+      - AIRFLOW_DATABASE_NAME=airflow
+      - AIRFLOW_DATABASE_USERNAME=airflowExtUsr
+      - AIRFLOW_DATABASE_PASSWORD=ext#2024@airflowdb
+      - AIRFLOW_WEBSERVER_HOST=airflow
+      - AIRFLOW_LOAD_EXAMPLES=yes
+    depends_on:
+      - postgresql
+      - redis
+      - airflow
+    networks:
+      - frontend
+  airflow:
+    image: bitnami/airflow:latest
+    container_name: airflow
+    restart: always
+    environment:
+      - AIRFLOW_FERNET_KEY=46BKJoQYlPPOexq0OhDZnIlNepKFf87WFwLbfzqDDho=
+      - AIRFLOW_SECRET_KEY=a25mQ1FHTUh3MnFRSk5KMEIyVVU2YmN0VGRyYTVXY08=
+      - AIRFLOW_EXECUTOR=CeleryExecutor
+      - AIRFLOW_DATABASE_HOST=postgresql
+      - AIRFLOW_DATABASE_PORT_NUMBER=5432
+      - AIRFLOW_DATABASE_NAME=airflow
+      - AIRFLOW_DATABASE_USERNAME=airflowExtUsr
+      - AIRFLOW_DATABASE_PASSWORD=ext#2024@airflowdb
+      - AIRFLOW_PASSWORD=ext##2024@airflow
+      - AIRFLOW_USERNAME=extSupusr
+      - AIRFLOW_EMAIL=user@example.com
+    ports:
+      - '8080:8080'
+    depends_on:
+      - postgresql
+      - redis
+    networks:
+      - frontend
+
+networks:
+  frontend:
+    driver: bridge
+
