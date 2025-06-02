@@ -55,7 +55,7 @@ volumes:        # Define volumes (optional)
 
 ```
 
-## 📕 Docker Guide and Refrence file
+## 📕 Docker Guide and Reference file
 
 > [Docker Compose Refrence guide](https://docs.docker.com/reference/compose-file/)
 
